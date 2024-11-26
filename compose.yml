@@ -7,10 +7,41 @@ services:
     networks:
       - kafka-network
     healthcheck:
-      test: ["CMD", "echo ruok | nc localhost 2181 | grep imok"]
+      test: echo stat | nc localhost 2181
       interval: 10s
       timeout: 10s
       retries: 5
     restart: always
+
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:9093
+      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+    networks:
+      - kafka-network
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    healthcheck:
+      test: kafka-topics.sh --bootstrap-server kafka:9092 --topic hc --create --if-not-exists && kafka-topics.sh --bootstrap-server kafka:9092 --topic hc --describe
+      start_period: 10s
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+networks:
+ kafka-network:
+   name: kafka-network
+   external: false
 
   
