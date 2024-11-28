@@ -38,10 +38,63 @@ services:
       timeout: 10s
       retries: 5
     restart: always
+  
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=password
+      - DOCKER_INFLUXDB_INIT_ORG=sic
+      - DOCKER_INFLUXDB_INIT_BUCKET=tp2
+      - DOCKER_INFLUXDB_INIT_RETENTION=7d  # Retención de datos (7 días)
+      - DOCKER_INFLUXDB_INIT_TOKEN=LRk4Qb4QtnFqdn83kYDG1EXsNRkhFGrdZqJQhfy2IOTN7IIyVhWdwEu8PeKlvhXDHomucMZVOpE7tAPLSx0xQ==
+    networks:
+      - tick-network
+    depends_on:
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 20s
+      timeout: 30s
+      retries: 5
+    restart: always
+  
+  telegraf:
+    image: telegraf:latest
+    container_name: telegraf
+    depends_on:
+      influxdb:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-network
+      - tick-network
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    environment:
+      - HOST_PROC=/rootfs/proc
+      - HOST_SYS=/rootfs/sys
+      - HOST_ETC=/rootfs/etc
+      - INFLUXDB_URL=http://influxdb:8086
+      - KAFKA_BROKER=kafka:9092
+    healthcheck:
+      test: ["CMD", "telegraf", "--test"]
+      timeout: 10s
+      retries: 1
+      start_period: 10s
 
 networks:
- kafka-network:
-   name: kafka-network
-   external: false
+  kafka-network:
+    name: kafka-network
+    external: false
+  tick-network:
+    name: tick-network
+    external: false
 
   
