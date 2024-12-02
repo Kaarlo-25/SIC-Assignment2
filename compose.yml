@@ -76,7 +76,7 @@ services:
       - kafka-network
       - tick-network
     volumes:
-      - ./telegraf_1.conf:/etc/telegraf/telegraf.conf:ro
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
     environment:
       - HOST_PROC=/rootfs/proc
       - HOST_SYS=/rootfs/sys
