@@ -54,9 +54,6 @@ services:
       - DOCKER_INFLUXDB_INIT_TOKEN=LRk4Qb4QtnFqdn83kYDG-1EXsNRkhFGrdZqJQhfy2IOTN7IIyVhWdwEu8PeKlvhXDHomucMZVOpE7tAPLSx0xQ==
     networks:
       - tick-network
-    depends_on:
-      kafka:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
       interval: 20s
@@ -88,6 +85,19 @@ services:
       timeout: 10s
       retries: 1
       start_period: 10s
+
+  humidity-sensor:
+    image: python:3.11
+    container_name: humidity-sensor
+    build: ./Producer1
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-network
+    environment:
+      - MEAM_HUMIDITY=1
+      - STD_HUMIDITY=1
 
 networks:
   kafka-network:
