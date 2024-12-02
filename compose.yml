@@ -11,7 +11,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-    restart: always
 
   kafka:
     image: bitnami/kafka:latest
@@ -37,8 +36,7 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
-    restart: always
-  
+
   influxdb:
     image: influxdb:latest
     container_name: influxdb
@@ -54,12 +52,14 @@ services:
       - DOCKER_INFLUXDB_INIT_TOKEN=LRk4Qb4QtnFqdn83kYDG-1EXsNRkhFGrdZqJQhfy2IOTN7IIyVhWdwEu8PeKlvhXDHomucMZVOpE7tAPLSx0xQ==
     networks:
       - tick-network
+    volumes:
+      - influxdb-conf:/etc/influxdb2 
+      - influxdb-data:/var/lib/influxdb2
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
       interval: 20s
       timeout: 30s
       retries: 5
-    restart: always
   
   telegraf:
     image: telegraf:latest
@@ -96,8 +96,10 @@ services:
     networks:
       - kafka-network
     environment:
-      - MEAM_HUMIDITY=1
-      - STD_HUMIDITY=1
+      - MEAN_HUMIDITY=60
+      - STD_HUMIDITY=15
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_TOPIC=sh-humidity
 
 networks:
   kafka-network:
@@ -107,4 +109,11 @@ networks:
     name: tick-network
     external: false
 
+volumes:
+  telegraf:
+    driver: local
+  influxdb-conf:
+    driver: local
+  influxdb-data:
+    driver: local
   
