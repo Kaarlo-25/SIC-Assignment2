@@ -51,7 +51,7 @@ services:
       - DOCKER_INFLUXDB_INIT_ORG=sic
       - DOCKER_INFLUXDB_INIT_BUCKET=tp2
       - DOCKER_INFLUXDB_INIT_RETENTION=7d  # Retención de datos (7 días)
-      - DOCKER_INFLUXDB_INIT_TOKEN=LRk4Qb4QtnFqdn83kYDG1EXsNRkhFGrdZqJQhfy2IOTN7IIyVhWdwEu8PeKlvhXDHomucMZVOpE7tAPLSx0xQ==
+      - DOCKER_INFLUXDB_INIT_TOKEN=LRk4Qb4QtnFqdn83kYDG-1EXsNRkhFGrdZqJQhfy2IOTN7IIyVhWdwEu8PeKlvhXDHomucMZVOpE7tAPLSx0xQ==
     networks:
       - tick-network
     depends_on:
@@ -76,7 +76,7 @@ services:
       - kafka-network
       - tick-network
     volumes:
-      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - ./telegraf_1.conf:/etc/telegraf/telegraf.conf:ro
     environment:
       - HOST_PROC=/rootfs/proc
       - HOST_SYS=/rootfs/sys
