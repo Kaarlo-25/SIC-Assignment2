@@ -17,9 +17,6 @@ services:
     image: bitnami/kafka:latest
     hostname: kafka
     container_name: kafka
-    ports:
-      - "9092:9092"
-      - "9093:9093"
     environment:
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
@@ -91,10 +88,10 @@ services:
       start_period: 10s
 
   humidity-sensor:
-    image: python:3.11
+    image: humidity-python:3.11
     hostname: sHumidity
     container_name: humidity-sensor
-    build: ./Producer1
+    build: ./HumProducer
     depends_on:
       kafka:
         condition: service_healthy
@@ -105,6 +102,86 @@ services:
       - STD_HUMIDITY=15
       - KAFKA_BROKER=kafka:9092
       - KAFKA_TOPIC=sh-humidity
+
+  cooling-sensor:
+    image: cooling-python:3.11
+    hostname: sCooling
+    container_name: cooling-sensor
+    build: ./CooProducer
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-network
+    environment:
+      - MEAN_COOLING=10
+      - STD_COOLING=5
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_TOPIC=sh-cooling
+
+  temp1-sensor:
+    image: temp1-python:3.11
+    hostname: sTemperature
+    container_name: temp1-sensor
+    build: ./Temp1Producer
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-network
+    environment:
+      - MEAN_TEMPERATURE=15
+      - STD_TEMPERATURE=5
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_TOPIC=sh-temperature
+  
+  temp2-sensor:
+    image: temp2-python:3.11
+    hostname: sTemperature
+    container_name: temp2-sensor
+    build: ./Temp2Producer
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-network
+    environment:
+      - MEAN_TEMPERATURE=15
+      - STD_TEMPERATURE=5
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_TOPIC=sh-temperature
+  
+  temp3-sensor:
+    image: temp3-python:3.11
+    hostname: sTemperature
+    container_name: temp3-sensor
+    build: ./Temp3Producer
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-network
+    environment:
+      - MEAN_TEMPERATURE=15
+      - STD_TEMPERATURE=5
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_TOPIC=sh-temperature
+
+  power-sensor:
+    image: power-python:3.11
+    hostname: sPower
+    container_name: power-sensor
+    build: ./PowProducer
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - kafka-network
+    environment:
+      - MEAN_POWER=60
+      - STD_POWER=15
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_TOPIC=sh-power
 
 networks:
   kafka-network:
