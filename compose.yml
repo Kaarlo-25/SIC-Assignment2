@@ -1,6 +1,7 @@
 services:
   zookeeper:
     image: bitnami/zookeeper:latest
+    hostname: zookeeper
     container_name: zookeeper
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
@@ -14,6 +15,7 @@ services:
 
   kafka:
     image: bitnami/kafka:latest
+    hostname: kafka
     container_name: kafka
     ports:
       - "9092:9092"
@@ -39,6 +41,7 @@ services:
 
   influxdb:
     image: influxdb:latest
+    hostname: influxdb
     container_name: influxdb
     ports:
       - "8086:8086"
@@ -49,7 +52,7 @@ services:
       - DOCKER_INFLUXDB_INIT_ORG=sic
       - DOCKER_INFLUXDB_INIT_BUCKET=tp2
       - DOCKER_INFLUXDB_INIT_RETENTION=7d  # Retención de datos (7 días)
-      - DOCKER_INFLUXDB_INIT_TOKEN=LRk4Qb4QtnFqdn83kYDG-1EXsNRkhFGrdZqJQhfy2IOTN7IIyVhWdwEu8PeKlvhXDHomucMZVOpE7tAPLSx0xQ==
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=LRk4Qb4QtnFqdn83kYDG-1EXsNRkhFGrdZqJQhfy2IOTN7IIyVhWdwEu8PeKlvhXDHomucMZVOpE7tAPLSx0xQ==
     networks:
       - tick-network
     volumes:
@@ -63,6 +66,7 @@ services:
   
   telegraf:
     image: telegraf:latest
+    hostname: telegraf
     container_name: telegraf
     depends_on:
       influxdb:
@@ -88,6 +92,7 @@ services:
 
   humidity-sensor:
     image: python:3.11
+    hostname: sHumidity
     container_name: humidity-sensor
     build: ./Producer1
     depends_on:
@@ -116,4 +121,4 @@ volumes:
     driver: local
   influxdb-data:
     driver: local
-  
+## hostname for the influxdb: 0e03e1f4b35ba000

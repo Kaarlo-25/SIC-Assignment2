@@ -24,10 +24,9 @@ def simulate_humidity(sensor_name):
 try:
     print("Starting humidity simulation...")
     while True:
-        for sensor in ["sensor1", "sensor2", "sensor3"]:
-            data = simulate_humidity(sensor)
-            producer.send(kafka_topic, data)
-            print(f"Sent to Kafka: {data}")
+        data = simulate_humidity("sHumidity")
+        producer.send(kafka_topic, data)
+        print(f"Sent to Kafka: {data}")
         time.sleep(30)  # Wait for 30 seconds
 except KeyboardInterrupt:
     print("\nSimulation stopped by user.")
