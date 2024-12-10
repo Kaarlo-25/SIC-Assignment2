@@ -1,0 +1,17 @@
+import "influxdata/influxdb/monitor"
+import "influxdata/influxdb/v1"
+
+data =
+    from(bucket: "tp2")
+        |> range(start: -1m)
+        |> filter(fn: (r) => r["_measurement"] == "sCooling")
+        |> filter(fn: (r) => r["_field"] == "cooling")
+        |> aggregateWindow(every: 1m, fn: min, createEmpty: false)
+
+option task = {name: "Cooling", every: 1m, offset: 0s}
+
+check = {_check_id: "0e1784bc79d5e000", _check_name: "Cooling", _type: "threshold", tags: {}}
+warn = (r) => r["cooling"] > 20.0
+messageFn = (r) => "Check: ${ r._check_name } is: ${ r._level }"
+
+data |> v1["fieldsAsCols"]() |> monitor["check"](data: check, messageFn: messageFn, warn: warn)

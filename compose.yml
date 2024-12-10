@@ -178,8 +178,8 @@ services:
     networks:
       - kafka-network
     environment:
-      - MEAN_POWER=60
-      - STD_POWER=15
+      - MEAN_POWER=950
+      - STD_POWER=50
       - KAFKA_BROKER=kafka:9092
       - KAFKA_TOPIC=sh-power
 
