@@ -88,7 +88,7 @@ services:
       start_period: 10s
 
   humidity-sensor:
-    image: humidity-python:3.11
+    image: humidity-python:1.0
     hostname: sHumidity
     container_name: humidity-sensor
     build: ./HumProducer
@@ -104,7 +104,7 @@ services:
       - KAFKA_TOPIC=sh-humidity
 
   cooling-sensor:
-    image: cooling-python:3.11
+    image: cooling-python:1.0
     hostname: sCooling
     container_name: cooling-sensor
     build: ./CooProducer
@@ -120,7 +120,7 @@ services:
       - KAFKA_TOPIC=sh-cooling
 
   temp1-sensor:
-    image: temp1-python:3.11
+    image: temp1-python:1.0
     hostname: sTemperature
     container_name: temp1-sensor
     build: ./Temp1Producer
@@ -136,7 +136,7 @@ services:
       - KAFKA_TOPIC=sh-temperature
   
   temp2-sensor:
-    image: temp2-python:3.11
+    image: temp2-python:1.0
     hostname: sTemperature
     container_name: temp2-sensor
     build: ./Temp2Producer
@@ -152,7 +152,7 @@ services:
       - KAFKA_TOPIC=sh-temperature
   
   temp3-sensor:
-    image: temp3-python:3.11
+    image: temp3-python:1.0
     hostname: sTemperature
     container_name: temp3-sensor
     build: ./Temp3Producer
@@ -168,7 +168,7 @@ services:
       - KAFKA_TOPIC=sh-temperature
 
   power-sensor:
-    image: power-python:3.11
+    image: power-python:1.0
     hostname: sPower
     container_name: power-sensor
     build: ./PowProducer

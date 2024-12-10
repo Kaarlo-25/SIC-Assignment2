@@ -19,7 +19,7 @@ def simulate_temperature(sensor_name):
     """Simulate a temperature reading for a given sensor."""
     temperature = max(0, min(30, random.gauss(mean_temperature, std_temperature)))
     timestamp = int(time.time() * 1e9)  # Nanoseconds since epoch
-    return f"{sensor_name} temperature={temperature:.2f} {timestamp}"
+    return f"{sensor_name} temp1={temperature:.2f} {timestamp}"
 
 try:
     print("Starting temperature simulation...")
