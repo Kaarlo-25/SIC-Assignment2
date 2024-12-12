@@ -10,7 +10,7 @@ data =
 
 option task = {name: "Temperature", every: 1m, offset: 0s}
 
-check = {_check_id: "1234567890abcdef", _check_name: "Temperature", _type: "threshold", tags: {}}
+check = {_check_id: "0e1a166a57ea5000", _check_name: "Temperature", _type: "threshold", tags: {}}
 crit = (r) => r["temperature"] < 25.0 or r["temperature"] > 30.0
 warn = (r) => r["temperature"] > 20.0
 ok = (r) => r["temperature"] >= 0.0 and r["temperature"] <= 19.0
