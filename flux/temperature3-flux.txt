@@ -1,0 +1,32 @@
+import "influxdata/influxdb/monitor"
+import "influxdata/influxdb/v1"
+
+data =
+    from(bucket: "tp2")
+        |> range(start: -1m)
+        |> filter(fn: (r) => r["_measurement"] == "sTemperature")
+        |> filter(fn: (r) => r["_field"] == "temp3")
+        |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)
+
+option task = {name: "Name this Check", every: 1m, offset: 0s}
+
+check = {
+    _check_id: "0e1b23c81586f000",
+    _check_name: "Name this Check",
+    _type: "threshold",
+    tags: {},
+}
+ok = (r) => r["temp3"] < 19.0 and r["temp3"] > 0.0
+warn = (r) => r["temp3"] > 20.0
+crit = (r) => r["temp3"] < 25.0 or r["temp3"] > 30.0
+messageFn = (r) => "Check: ${ r._check_name } is: ${ r._level }"
+
+data
+    |> v1["fieldsAsCols"]()
+    |> monitor["check"](
+        data: check,
+        messageFn: messageFn,
+        ok: ok,
+        warn: warn,
+        crit: crit,
+    )
